@@ -224,7 +224,7 @@ type Middleware = (
   next: ReturnType<typeof vi.fn>,
 ) => void;
 
-function getHookHandler<T extends (...args: any[]) => any>(
+function getHookHandler<T extends (...args: never[]) => unknown>(
   hook: Plugin[keyof Plugin],
 ): T {
   if (typeof hook === "function") {
