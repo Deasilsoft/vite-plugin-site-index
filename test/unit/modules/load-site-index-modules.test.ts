@@ -7,24 +7,29 @@ import { loadSiteIndexModule } from "../../../src/modules/load-site-index-module
 describe("loadSiteIndexModule", () => {
   it("loads an ESM module from a file path", async () => {
     const dir = await fs.mkdtemp(path.join(os.tmpdir(), "site-index-module-"));
-    const file = path.join(dir, "about.site-index.mjs");
 
-    await fs.writeFile(
-      file,
-      [
-        "export const siteIndex = {",
-        '  url: "/about",',
-        '  sitemap: "pages",',
-        "  index: true",
-        "};",
-      ].join("\n"),
-      "utf8",
-    );
+    try {
+      const file = path.join(dir, "about.site-index.mjs");
 
-    const result = (await loadSiteIndexModule(file)) as {
-      siteIndex: { url: string };
-    };
+      await fs.writeFile(
+        file,
+        [
+          "export const siteIndex = {",
+          '  url: "/about",',
+          '  sitemap: "pages",',
+          "  index: true",
+          "};",
+        ].join("\n"),
+        "utf8",
+      );
 
-    expect(result.siteIndex.url).toBe("/about");
+      const result = (await loadSiteIndexModule(file)) as {
+        siteIndex: { url: string };
+      };
+
+      expect(result.siteIndex.url).toBe("/about");
+    } finally {
+      await fs.rm(dir, { recursive: true, force: true });
+    }
   });
 });
