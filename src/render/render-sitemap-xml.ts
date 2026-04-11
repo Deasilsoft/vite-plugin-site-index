@@ -1,14 +1,23 @@
 import type { ResolvedEntry } from "../pipeline/types.js";
 
+function escapeXml(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&apos;");
+}
+
 export function renderSitemapXml(
   entries: ResolvedEntry[],
   siteUrl: string,
 ): string {
   const urls = entries
     .map((e) => {
-      const loc = `${siteUrl}${e.url}`;
+      const loc = escapeXml(`${siteUrl}${e.url}`);
       const lastmod = e.lastModified
-        ? `<lastmod>${e.lastModified}</lastmod>`
+        ? `<lastmod>${escapeXml(e.lastModified)}</lastmod>`
         : "";
 
       return `<url><loc>${loc}</loc>${lastmod}</url>`;

@@ -2,6 +2,19 @@ import { describe, expect, it } from "vitest";
 import { normalizeConfig } from "../../src/config.js";
 
 describe("normalizeConfig", () => {
+  it("strips trailing slash from siteUrl", () => {
+    expect(
+      normalizeConfig({
+        siteUrl: "https://example.com/",
+      }),
+    ).toEqual({
+      siteUrl: "https://example.com",
+      include: ["src/**/site-index.ts", "src/**/*.site-index.ts"],
+      exclude: [],
+      userAgent: "*",
+    });
+  });
+
   it("uses defaults for include, exclude, and userAgent", () => {
     expect(
       normalizeConfig({

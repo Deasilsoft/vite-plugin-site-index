@@ -11,7 +11,7 @@ export function normalizeConfig(
   options: SiteIndexPluginOptions,
 ): NormalizedConfig {
   return {
-    siteUrl: options.siteUrl,
+    siteUrl: options.siteUrl.replace(/\/+$/, ""),
     include: normalizeArray(options.include, [
       "src/**/site-index.ts",
       "src/**/*.site-index.ts",
