@@ -15,7 +15,14 @@ async function mapWithConcurrencyLimit(
     while (nextIndex < files.length) {
       const currentIndex = nextIndex;
       nextIndex += 1;
-      await mapper(files[currentIndex]);
+
+      const file = files[currentIndex];
+
+      if (!file) {
+        continue;
+      }
+
+      await mapper(file);
     }
   }
 
@@ -39,12 +46,14 @@ export async function getLastModifiedMap(
           "git",
           ["log", "-1", "--format=%cI", "--", file],
           {
-            stdio: ["ignore", "pipe", "ignore"],
+            encoding: "utf8",
           },
         );
         const output = stdout.trim();
 
-        if (output) map.set(file, output);
+        if (output) {
+          map.set(file, output);
+        }
       } catch {
         warnings.push(`Failed to resolve lastModified for ${file}`);
       }
