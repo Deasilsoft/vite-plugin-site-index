@@ -5,13 +5,6 @@ export type SiteIndexMeta = {
   index?: boolean;
 };
 
-export type ResolvedSiteIndexEntry = {
-  url: `/${string}`;
-  lastModified?: string;
-  sitemap: string;
-  index: boolean;
-};
-
 export type SiteIndexPluginOptions = {
   siteUrl: string;
   include?: string | string[];

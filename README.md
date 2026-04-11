@@ -1,5 +1,7 @@
 # vite-plugin-site-index
 
+[![codecov](https://codecov.io/gh/OWNER/REPO/branch/main/graph/badge.svg)](https://codecov.io/gh/OWNER/REPO)
+
 A Vite plugin that generates:
 
 - `sitemap.xml` as a sitemap index

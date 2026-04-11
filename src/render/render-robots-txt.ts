@@ -1,0 +1,16 @@
+export function renderRobotsTxt(options: {
+  siteUrl: string;
+  userAgent: string;
+  disallowed: string[];
+}): string {
+  const lines: string[] = [];
+
+  lines.push(`User-agent: ${options.userAgent}`);
+  lines.push(`Sitemap: ${options.siteUrl}/sitemap.xml`);
+
+  for (const path of options.disallowed) {
+    lines.push(`Disallow: ${path}`);
+  }
+
+  return lines.join("\n");
+}
