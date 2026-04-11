@@ -38,6 +38,9 @@ jobs:
       - name: Type-check
         run: npm run typecheck
 
+      - name: Knip (unused files/exports/deps)
+        run: npm run knip
+
       - name: Test
         run: npm test
 
