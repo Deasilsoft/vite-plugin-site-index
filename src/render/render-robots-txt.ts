@@ -4,9 +4,10 @@ export function renderRobotsTxt(options: {
   disallowed: string[];
 }): string {
   const lines: string[] = [];
+  const normalizedSiteUrl = options.siteUrl.replace(/\/+$/, "");
 
   lines.push(`User-agent: ${options.userAgent}`);
-  lines.push(`Sitemap: ${options.siteUrl}/sitemap.xml`);
+  lines.push(`Sitemap: ${normalizedSiteUrl}/sitemap.xml`);
 
   for (const path of options.disallowed) {
     lines.push(`Disallow: ${path}`);
