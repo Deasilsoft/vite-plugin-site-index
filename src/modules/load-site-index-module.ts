@@ -1,7 +1,10 @@
 import path from "node:path";
-import { pathToFileURL } from "node:url";
+import { bundleRequire } from "bundle-require";
 
 export async function loadSiteIndexModule(file: string): Promise<unknown> {
-  const url = pathToFileURL(path.resolve(file)).href;
-  return import(url);
+  const { mod } = await bundleRequire({
+    filepath: path.resolve(file),
+  });
+
+  return mod;
 }
