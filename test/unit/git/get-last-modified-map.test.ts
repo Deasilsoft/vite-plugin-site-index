@@ -1,21 +1,21 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { getLastModifiedMap } from "../../../src/git/get-last-modified-map.js";
 
-const { execSyncMock } = vi.hoisted(() => ({
-  execSyncMock: vi.fn(),
+const { execFileSyncMock } = vi.hoisted(() => ({
+  execFileSyncMock: vi.fn(),
 }));
 
 vi.mock("node:child_process", () => ({
-  execSync: execSyncMock,
+  execFileSync: execFileSyncMock,
 }));
 
 describe("getLastModifiedMap", () => {
   beforeEach(() => {
-    execSyncMock.mockReset();
+    execFileSyncMock.mockReset();
   });
 
   it("returns git lastModified values for files", async () => {
-    execSyncMock
+    execFileSyncMock
       .mockReturnValueOnce(Buffer.from("2026-04-10T12:00:00.000Z\n"))
       .mockReturnValueOnce(Buffer.from("2026-04-11T09:30:00.000Z\n"));
 
@@ -36,7 +36,7 @@ describe("getLastModifiedMap", () => {
   });
 
   it("adds a warning when git lookup fails", async () => {
-    execSyncMock.mockImplementationOnce(() => {
+    execFileSyncMock.mockImplementationOnce(() => {
       throw new Error("git failed");
     });
 

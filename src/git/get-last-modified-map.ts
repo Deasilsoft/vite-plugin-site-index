@@ -1,4 +1,4 @@
-import { execSync } from "node:child_process";
+import { execFileSync } from "node:child_process";
 
 export async function getLastModifiedMap(
   files: string[],
@@ -8,7 +8,7 @@ export async function getLastModifiedMap(
 
   for (const file of files) {
     try {
-      const output = execSync(`git log -1 --format=%cI -- "${file}"`, {
+      const output = execFileSync("git", ["log", "-1", "--format=%cI", "--", file], {
         stdio: ["ignore", "pipe", "ignore"],
       })
         .toString()
