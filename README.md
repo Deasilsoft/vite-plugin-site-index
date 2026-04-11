@@ -1,6 +1,6 @@
 # vite-plugin-site-index
 
-[![codecov](https://codecov.io/gh/OWNER/REPO/branch/main/graph/badge.svg)](https://codecov.io/gh/OWNER/REPO)
+[![codecov](https://codecov.io/gh/Deasilsoft/vite-plugin-site-index/branch/main/graph/badge.svg)](https://codecov.io/gh/Deasilsoft/vite-plugin-site-index)
 
 A Vite plugin that generates:
 
