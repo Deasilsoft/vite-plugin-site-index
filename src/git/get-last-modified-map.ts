@@ -8,9 +8,13 @@ export async function getLastModifiedMap(
 
   for (const file of files) {
     try {
-      const output = execFileSync("git", ["log", "-1", "--format=%cI", "--", file], {
-        stdio: ["ignore", "pipe", "ignore"],
-      })
+      const output = execFileSync(
+        "git",
+        ["log", "-1", "--format=%cI", "--", file],
+        {
+          stdio: ["ignore", "pipe", "ignore"],
+        },
+      )
         .toString()
         .trim();
 

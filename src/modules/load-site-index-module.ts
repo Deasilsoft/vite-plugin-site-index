@@ -1,5 +1,5 @@
-import path from "node:path";
 import { bundleRequire } from "bundle-require";
+import path from "node:path";
 
 export async function loadSiteIndexModule(file: string): Promise<unknown> {
   const { mod } = await bundleRequire({
