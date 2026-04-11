@@ -50,6 +50,8 @@
     "vite": "^7.0.0 || ^8.0.0"
   },
   "devDependencies": {
+    "@emnapi/core": "^1.9.2",
+    "@emnapi/runtime": "^1.9.2",
     "@eslint/js": "^10.0.1",
     "@types/node": "^25.6.0",
     "@vitest/coverage-v8": "^4.1.4",
@@ -61,5 +63,11 @@
     "typescript-eslint": "^8.58.1",
     "vite": "^8.0.8",
     "vitest": "^4.1.4"
+  },
+  "knip": {
+    "ignoreDependencies": [
+      "@emnapi/core",
+      "@emnapi/runtime"
+    ]
   }
 }
