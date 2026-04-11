@@ -32,11 +32,11 @@ export async function generateSiteArtifacts(
     validateSitemapName(entry.sitemap);
   });
 
-  const lastModifiedMap = await getLastModifiedMap(
-    collectedEntries.map((entry) => entry.sourceFile),
-    warnings,
+  const sourceFiles = Array.from(
+    new Set(collectedEntries.map((entry) => entry.sourceFile)),
   );
 
+  const lastModifiedMap = await getLastModifiedMap(sourceFiles, warnings);
   const resolvedEntries = collectedEntries.map((entry) =>
     createResolvedEntry(
       entry,
