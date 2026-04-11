@@ -13,14 +13,9 @@ async function mapWithConcurrencyLimit(
 
   async function worker(): Promise<void> {
     while (nextIndex < files.length) {
-      const currentIndex = nextIndex;
+      const file = files[nextIndex]!;
+
       nextIndex += 1;
-
-      const file = files[currentIndex];
-
-      if (!file) {
-        continue;
-      }
 
       await mapper(file);
     }
