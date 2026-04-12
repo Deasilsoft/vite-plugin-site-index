@@ -22,10 +22,10 @@
   },
   "type": "module",
   "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "types": "./dist/src/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
+      "types": "./dist/src/index.d.ts",
       "import": "./dist/index.js"
     }
   },
@@ -36,7 +36,8 @@
     "node": ">=20"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.build.json",
+    "build": "vite build",
+    "build:watch": "vite build --watch",
     "format": "prettier . --write",
     "format:check": "prettier . --check",
     "lint": "eslint .",
@@ -44,10 +45,16 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
-    "knip": "knip"
+    "knip": "knip",
+    "check": "npm run format:check && npm run typecheck && npm run lint && npm run test",
+    "fix": "npm run format && npm run lint:fix"
   },
   "peerDependencies": {
     "vite": "^7.0.0 || ^8.0.0"
+  },
+  "dependencies": {
+    "bundle-require": "^5.1.0",
+    "tinyglobby": "^0.2.12"
   },
   "devDependencies": {
     "@emnapi/core": "^1.9.2",
@@ -55,20 +62,22 @@
     "@eslint/js": "^10.0.1",
     "@types/node": "^25.6.0",
     "@vitest/coverage-v8": "^4.1.4",
-    "bundle-require": "^5.1.0",
     "eslint": "^10.2.0",
-    "fast-glob": "^3.3.3",
     "knip": "^6.4.0",
     "prettier": "^3.8.2",
     "typescript": "^6.0.2",
     "typescript-eslint": "^8.58.1",
     "vite": "^8.0.8",
+    "vite-plugin-dts": "^4.5.4",
     "vitest": "^4.1.4"
   },
   "knip": {
     "ignoreDependencies": [
       "@emnapi/core",
       "@emnapi/runtime"
+    ],
+    "ignoreFiles": [
+      "example/**"
     ]
   }
 }
