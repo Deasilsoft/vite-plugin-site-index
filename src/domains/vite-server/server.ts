@@ -17,12 +17,30 @@ export function configureSiteIndexServer(
     server.config.logger.error(`[vite-plugin-site-index] ${message}`);
   }
 
-  async function refreshSafely(): Promise<void> {
+  let inFlight: Promise<void> | null = null;
+  let queued = false;
+
+  async function runRefresh(): Promise<void> {
     try {
-      return await refreshFromDevServer(server);
+      await refreshFromDevServer(server);
     } catch (error) {
       logError(error);
     }
+  }
+
+  async function refreshSafely(): Promise<void> {
+    if (inFlight !== null) {
+      queued = true;
+      await inFlight;
+      return;
+    }
+
+    do {
+      queued = false;
+      inFlight = runRefresh();
+      await inFlight;
+      inFlight = null;
+    } while (queued);
   }
 
   function onFileChange(file: string): void {

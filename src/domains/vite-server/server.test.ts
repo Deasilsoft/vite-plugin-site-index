@@ -40,6 +40,39 @@ describe("configureSiteIndexServer", () => {
     expect(server.middlewares.use).toHaveBeenCalledWith(expect.any(Function));
   });
 
+  it("coalesces multiple watcher events during an in-flight refresh into one additional refresh", async () => {
+    let resolveFirstRefresh!: () => void;
+
+    const firstRefreshDone = new Promise<void>((resolve) => {
+      resolveFirstRefresh = resolve;
+    });
+
+    const refreshFromDevServer = vi
+      .fn<RefreshFromDevServer>()
+      .mockReturnValueOnce(firstRefreshDone)
+      .mockResolvedValue(undefined);
+
+    const server = createServerHarness();
+
+    configureSiteIndexServer(server, artifactsRef, refreshFromDevServer);
+
+    expect(refreshFromDevServer).toHaveBeenCalledTimes(1);
+
+    triggerWatcher(server, "change", "/src/about.site-index.ts");
+    triggerWatcher(server, "change", "/src/blog.site-index.ts");
+    triggerWatcher(server, "change", "/src/about.site-index.ts");
+
+    expect(refreshFromDevServer).toHaveBeenCalledTimes(1);
+
+    resolveFirstRefresh();
+
+    await vi.waitFor(() =>
+      expect(refreshFromDevServer).toHaveBeenCalledTimes(2),
+    );
+
+    expect(refreshFromDevServer).toHaveBeenCalledTimes(2);
+  });
+
   it.each(["add", "change", "unlink"])(
     "refreshes on %s for .site-index files",
     async (event) => {
