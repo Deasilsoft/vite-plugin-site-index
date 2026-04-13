@@ -5,7 +5,7 @@ import {
   assertValidSitemapName,
 } from "./validate";
 
-describe("assertValidEntryUrl edge cases", () => {
+describe("assertValidSiteIndexURL edge cases", () => {
   it.each([
     ["about", "Invalid url: about"],
     ["/about?x=1", "Invalid url (no query/fragment): /about?x=1"],
@@ -17,7 +17,7 @@ describe("assertValidEntryUrl edge cases", () => {
   });
 });
 
-describe("assertNoDuplicateUrls edge cases", () => {
+describe("assertNoDuplicateURLs edge cases", () => {
   it("rejects duplicate urls", () => {
     expect(() =>
       assertNoDuplicateURLs([
