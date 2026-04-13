@@ -3,12 +3,17 @@ import { fileURLToPath } from "node:url";
 import { defineConfig } from "vite";
 import dts from "vite-plugin-dts";
 
-const srcDir = fileURLToPath(new URL("./src", import.meta.url));
+export function resolveAliasPath(dir: string) {
+  const base = import.meta.url;
+  const url = new URL(dir, base);
+
+  return fileURLToPath(url);
+}
 
 export default defineConfig({
   resolve: {
     alias: {
-      "@": srcDir,
+      "@": resolveAliasPath("src"),
     },
   },
   build: {
@@ -19,15 +24,15 @@ export default defineConfig({
     },
     sourcemap: true,
     rolldownOptions: {
-      external: [/^node:/, "vite", "bundle-require", "tinyglobby"],
+      external: [/^node:/, "vite", "tinyglobby"],
     },
   },
   plugins: [
     dts({
       entryRoot: "src",
       outDir: "dist",
-      include: ["src"],
-      exclude: ["src/**/*.test.ts"],
+      include: ["src/**/*.ts"],
+      exclude: ["**/*.test.ts"],
       insertTypesEntry: false,
       rollupTypes: false,
     }),

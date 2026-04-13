@@ -13,15 +13,14 @@
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
     "noEmit": true,
-    "types": ["node"],
+    "types": ["node", "vite/client"],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@examples": ["./examples/index.ts"],
+      "@examples/*": ["./examples/*"],
+      "vite-plugin-site-index": ["./src/index.ts"]
     }
   },
-  "include": [
-    "src/**/*.ts",
-    "example/**/*.ts",
-    "vite.config.ts",
-    "vitest.config.ts"
-  ]
+  "include": ["**/*.ts"],
+  "exclude": ["coverage", "dist", "node_modules"]
 }

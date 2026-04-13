@@ -1,2 +1,3 @@
-export { siteIndexPlugin } from "@/plugin";
-export type { Config, SiteIndex } from "@/shared/types.js";
+export { siteIndexPlugin } from "./plugin.js";
+export type { Options } from "./domains/config";
+export type { SiteIndex, SiteIndexes } from "./domains/site-indexes";

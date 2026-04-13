@@ -1,21 +1,21 @@
-import { fileURLToPath } from "node:url";
 import { defineConfig } from "vitest/config";
-
-const srcDir = fileURLToPath(new URL("./src", import.meta.url));
+import { resolveAliasPath } from "./vite.config";
 
 export default defineConfig({
   resolve: {
     alias: {
-      "@": srcDir,
+      "@": resolveAliasPath("src"),
+      "@examples": resolveAliasPath("examples"),
     },
   },
   test: {
     environment: "node",
-    include: ["**/*.test.ts"],
+    include: ["src/**/*.test.ts", "test/**/*.test.ts"],
     coverage: {
       provider: "v8",
-      reporter: ["text", "json-summary", "lcov"],
-      exclude: ["**/*.test.ts", "example"],
+      reporter: ["text", "lcov"],
+      include: ["src/**/*.ts"],
+      exclude: ["**/*.test.ts"],
       thresholds: {
         statements: 100,
         branches: 100,
