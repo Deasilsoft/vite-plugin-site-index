@@ -38,8 +38,19 @@ jobs:
       - name: Type-check
         run: npm run typecheck
 
+      - name: Knip (unused files/exports/deps)
+        run: npm run knip
+
       - name: Test
-        run: npm test
+        run: npm test -- --coverage
 
       - name: Build
         run: npm run build
+
+      - name: Upload coverage to Codecov
+        if: matrix.node-version == 24 && github.ref == 'refs/heads/main'
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage/lcov.info
+          disable_search: true

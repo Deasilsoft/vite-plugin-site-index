@@ -1,27 +1,26 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
     "lib": ["ES2022"],
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
     "verbatimModuleSyntax": true,
     "isolatedModules": true,
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
     "noEmit": true,
-    "types": ["node"]
+    "types": ["node", "vite/client"],
+    "paths": {
+      "@/*": ["./src/*"],
+      "@examples": ["./examples/index.ts"],
+      "@examples/*": ["./examples/*"],
+      "vite-plugin-site-index": ["./src/index.ts"]
+    }
   },
-  "include": [
-    "src/**/*.ts",
-    "test/**/*.ts",
-    "vite.config.ts",
-    "vitest.config.ts"
-  ]
+  "include": ["**/*.ts"],
+  "exclude": ["coverage", "dist", "node_modules"]
 }

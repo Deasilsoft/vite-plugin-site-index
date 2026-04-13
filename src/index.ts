@@ -1,9 +1,3 @@
-export type {
-  ResolvedSiteIndexEntry,
-  SiteIndexMeta,
-  SiteIndexPluginOptions,
-} from "./types.js";
-
-export function siteIndexPlugin() {
-  throw new Error("Not implemented yet.");
-}
+export { siteIndexPlugin } from "./plugin.js";
+export type { Options } from "./domains/config";
+export type { SiteIndex, SiteIndexes } from "./domains/site-indexes";
