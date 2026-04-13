@@ -3,7 +3,7 @@ import type { EntryModule } from "./types.js";
 
 function normalizeModule(loaded: unknown): EntryModule {
   if (!loaded || typeof loaded !== "object") {
-    return loaded as EntryModule;
+    throw new Error("Module must export siteIndexes");
   }
 
   const module = loaded as Partial<EntryModule> & { default?: unknown };

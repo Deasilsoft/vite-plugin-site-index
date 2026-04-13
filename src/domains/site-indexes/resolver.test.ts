@@ -30,12 +30,12 @@ describe("resolveModule", () => {
     expect(result).toEqual({ siteIndexes: [{ url: "/about" }] });
   });
 
-  it("passes through a non-object value unchanged", async () => {
+  it("throws a clear error when the module is not an object", async () => {
     const loadWithVite = vi.fn().mockResolvedValue(null);
 
-    const result = await resolveModule("/bad.site-index.ts", loadWithVite);
-
-    expect(result).toBeNull();
+    await expect(
+      resolveModule("/bad.site-index.ts", loadWithVite),
+    ).rejects.toThrow("Module must export siteIndexes");
   });
 
   it("passes through an object with no siteIndexes unchanged", async () => {

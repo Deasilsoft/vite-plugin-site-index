@@ -7,7 +7,7 @@ import { loadRegistry } from "./loader.js";
 import type { EntryModule, SiteIndexes } from "./types.js";
 
 function extractSiteIndexes(module: EntryModule): SiteIndexes {
-  if (!module.siteIndexes) {
+  if (!module || typeof module !== "object" || !module.siteIndexes) {
     throw new Error("Module must export siteIndexes");
   }
 
