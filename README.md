@@ -1,34 +1,42 @@
 # Official site-index packages
 
-Generate sitemaps (tree) and robots.txt in from code or data.
+Generate deterministic sitemaps and robots.txt from code or data.
 
-Deterministic sitemap and robots generation split into three focused packages:
+Define your site structure once using `*.site-index.*` modules, and generate identical artifacts across build tools, CLI workflows, and programmatic integrations.
+
+The system is split into three focused packages:
 
 - `site-index`: core pipeline library (framework-agnostic)
-- `site-index-cli`: CLI wrapper for Node/cron usage
+- `site-index-cli`: CLI wrapper for Node/CI/cron usage
 - `vite-plugin-site-index`: Vite integration built on top of `site-index`
 
-The split is intentional: each package has one job, and they all share the same module format (`*.site-index.*`) and output artifacts.
+All packages share the same module contract and produce the same output artifacts.
 
 ## Package map
 
 | Package                  | Purpose                                                             | Best for                                                     |
 | ------------------------ | ------------------------------------------------------------------- | ------------------------------------------------------------ |
 | `site-index`             | Discovery, module loading contract, validation, artifact generation | Programmatic integration in any Node app                     |
-| `site-index-cli`         | Running the pipeline from terminal/CI/cron                          | Scheduled jobs, static generation without writing glue code  |
+| `site-index-cli`         | Running the pipeline from terminal/CI/cron                          | Scheduled jobs, static generation without custom glue code   |
 | `vite-plugin-site-index` | Vite build/dev integration                                          | Vite apps that want sitemap + robots artifacts automatically |
 
 ## Install
 
-Install the package that matches your entrypoint:
+Install based on your use case:
+
+**Vite app**
 
 ```bash
 npm install -D vite-plugin-site-index
 ```
 
+**CLI / CI / cron**
+
 ```bash
 npm install -D site-index-cli
 ```
+
+**Programmatic usage**
 
 ```bash
 npm install site-index
@@ -65,7 +73,7 @@ export default rows.map((row) => ({
 
 ## Output artifacts
 
-All three packages produce the same artifact set:
+All packages produce the same artifact set:
 
 - `sitemap.xml` (sitemap index)
 - `sitemap-<name>.xml`
@@ -73,7 +81,7 @@ All three packages produce the same artifact set:
 
 ## Flow 1: Vite plugin (`vite-plugin-site-index`)
 
-Use this when your app is already built with Vite.
+For Vite-based apps.
 
 ```ts
 import { defineConfig } from "vite";
@@ -95,15 +103,18 @@ Behavior:
 
 ## Flow 2: CLI (`site-index-cli`)
 
-Use this for CI/cron/manual builds.
+For CI, cron jobs, or manual builds.
 
 ```bash
 site-index build --site-url https://example.com --root .
 ```
 
-Common options:
+Required:
 
-- `--site-url <url>` required base URL
+- `--site-url <url>` base URL
+
+Optional:
+
 - `--root <path>` discovery root (default: current directory)
 - `--out-dir <dir>` artifact output directory (default: `dist`)
 - `--config <path>` Vite config path
@@ -117,7 +128,7 @@ site-index scaffold pages --dir src
 
 ## Flow 3: Core library (`site-index`)
 
-Use this when you want full programmatic control.
+For full programmatic control.
 
 ```ts
 import { runSiteIndexPipeline } from "site-index";
@@ -141,6 +152,12 @@ console.log(result.data);
 console.log(result.warnings);
 ```
 
+## Constraints
+
+- Requires Node.js
+- Uses file-based discovery via `*.site-index.*` modules
+- Module loading relies on runtime execution (e.g. Vite SSR or native import)
+
 ## Workspace development
 
 This repository is an npm workspaces monorepo (`packages/*`).
@@ -153,4 +170,4 @@ npm run lint
 npm run test
 ```
 
-Per-package scripts are also available under each `packages/*/package.json`.
+Per-package scripts are available under each `packages/*/package.json`.
