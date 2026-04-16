@@ -1,88 +1,156 @@
-# vite-plugin-site-index
+# Official site-index packages
 
-[![codecov](https://codecov.io/gh/Deasilsoft/vite-plugin-site-index/branch/main/graph/badge.svg)](https://codecov.io/gh/Deasilsoft/vite-plugin-site-index)
+Generate sitemaps (tree) and robots.txt in from code or data.
 
-A Vite plugin that generates:
+Deterministic sitemap and robots generation split into three focused packages:
 
-- `sitemap.xml` as a sitemap index
-- `sitemap-*.xml` leaf sitemaps
+- `site-index`: core pipeline library (framework-agnostic)
+- `site-index-cli`: CLI wrapper for Node/cron usage
+- `vite-plugin-site-index`: Vite integration built on top of `site-index`
+
+The split is intentional: each package has one job, and they all share the same module format (`*.site-index.*`) and output artifacts.
+
+## Package map
+
+| Package                  | Purpose                                                             | Best for                                                     |
+| ------------------------ | ------------------------------------------------------------------- | ------------------------------------------------------------ |
+| `site-index`             | Discovery, module loading contract, validation, artifact generation | Programmatic integration in any Node app                     |
+| `site-index-cli`         | Running the pipeline from terminal/CI/cron                          | Scheduled jobs, static generation without writing glue code  |
+| `vite-plugin-site-index` | Vite build/dev integration                                          | Vite apps that want sitemap + robots artifacts automatically |
+
+## Install
+
+Install the package that matches your entrypoint:
+
+```bash
+npm install -D vite-plugin-site-index
+```
+
+```bash
+npm install -D site-index-cli
+```
+
+```bash
+npm install site-index
+```
+
+## Shared content model (`*.site-index.*`)
+
+Each discovered module exports a default array:
+
+```ts
+import type { SiteIndex } from "site-index";
+
+export default [
+  { url: "/" },
+  { url: "/about" },
+  { url: "/blog/first-post", sitemap: "blog" },
+  { url: "/admin", index: false },
+] satisfies SiteIndex[];
+```
+
+Dynamic data is supported:
+
+```ts
+import type { SiteIndex } from "site-index";
+
+const rows = [{ slug: "first-post", updatedAt: "2026-04-01T00:00:00.000Z" }];
+
+export default rows.map((row) => ({
+  url: `/blog/${row.slug}`,
+  sitemap: "blog",
+  lastModified: row.updatedAt,
+})) satisfies SiteIndex[];
+```
+
+## Output artifacts
+
+All three packages produce the same artifact set:
+
+- `sitemap.xml` (sitemap index)
+- `sitemap-<name>.xml`
 - `robots.txt`
 
-from dedicated metadata modules.
+## Flow 1: Vite plugin (`vite-plugin-site-index`)
 
-## How Discovery Works
-
-The plugin scans your project for `*.site-index.<ext>` files and loads them through Vite SSR — at build time via a dedicated Vite server, and at dev time via the live dev server.
-
-Supported extensions: `.ts`, `.js`, `.mjs`
-
-Each matched module must export `siteIndexes`:
+Use this when your app is already built with Vite.
 
 ```ts
-// about.site-index.ts
-import type { SiteIndexes } from "vite-plugin-site-index";
+import { defineConfig } from "vite";
+import { siteIndexPlugin } from "vite-plugin-site-index";
 
-export const siteIndexes: SiteIndexes = [{ url: "/about" }];
+export default defineConfig({
+  plugins: [
+    siteIndexPlugin({
+      siteUrl: "https://example.com",
+    }),
+  ],
+});
 ```
 
-## Aliases & Imports
+Behavior:
 
-Because modules are loaded through Vite SSR, your **project's Vite config is fully respected** inside `.site-index.*` files. You can freely use:
+- `vite build` emits artifacts into the bundle output
+- `vite dev` serves `/sitemap.xml`, `/sitemap-<name>.xml`, and `/robots.txt`
 
-- path aliases (e.g. `@/lib/db`)
-- any installed npm package
-- async code, database clients, API calls
+## Flow 2: CLI (`site-index-cli`)
+
+Use this for CI/cron/manual builds.
+
+```bash
+site-index build --site-url https://example.com --root .
+```
+
+Common options:
+
+- `--site-url <url>` required base URL
+- `--root <path>` discovery root (default: current directory)
+- `--out-dir <dir>` artifact output directory (default: `dist`)
+- `--config <path>` Vite config path
+- `--mode <mode>` Vite mode
+
+Scaffold helper:
+
+```bash
+site-index scaffold pages --dir src
+```
+
+## Flow 3: Core library (`site-index`)
+
+Use this when you want full programmatic control.
 
 ```ts
-// blog.site-index.ts — fetching posts from a database
-import type { SiteIndexes } from "vite-plugin-site-index";
-import { db } from "@/lib/db";
+import { runSiteIndexPipeline } from "site-index";
 
-const posts = await db.query("SELECT slug, updated_at FROM posts");
+const result = await runSiteIndexPipeline({
+  siteUrl: "https://example.com",
+  discoveryRoot: process.cwd(),
+  loadDiscoveredModules: async (modules) => {
+    const data = await Promise.all(
+      modules.map(async (module) => ({
+        module,
+        exports: (await import(module.filePath)) as { default: unknown[] },
+      })),
+    );
 
-export const siteIndexes: SiteIndexes = posts.map((p) => ({
-  url: `/${p.slug}`,
-  sitemap: "blog",
-  lastModified: new Date(p.updated_at).toISOString(),
-}));
+    return { data, warnings: [] };
+  },
+});
+
+console.log(result.data);
+console.log(result.warnings);
 ```
 
-## Plugin Options
+## Workspace development
 
-```ts
-type Options = {
-  siteUrl: string;
-};
+This repository is an npm workspaces monorepo (`packages/*`).
+
+```bash
+npm install
+npm run build
+npm run typecheck
+npm run lint
+npm run test
 ```
 
-## Status
-
-Early development.
-
-## Scope
-
-This package handles:
-
-- sitemap index generation
-- leaf sitemap generation
-- robots.txt generation
-
-This package does not handle:
-
-- HTML meta tags
-- canonical URLs
-- Open Graph
-- `priority`
-- `changefreq`
-- nested sitemap indexes
-
-## Metadata
-
-```ts
-export type SiteIndexMeta = {
-  url: `/${string}`;
-  lastModified?: string;
-  sitemap?: string;
-  index?: boolean;
-};
-```
+Per-package scripts are also available under each `packages/*/package.json`.

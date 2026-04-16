@@ -1,0 +1,56 @@
+{
+  "name": "site-index-cli",
+  "version": "0.0.0",
+  "description": "CLI for site-index pipeline execution and scaffolding.",
+  "keywords": [
+    "site-index",
+    "cli",
+    "sitemap",
+    "robots",
+    "seo"
+  ],
+  "homepage": "https://github.com/Deasilsoft/site-index/tree/main/packages/site-index-cli",
+  "bugs": {
+    "url": "https://github.com/Deasilsoft/site-index/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Deasilsoft/site-index.git",
+    "directory": "packages/site-index-cli"
+  },
+  "license": "MIT",
+  "author": "Deasilsoft <contact@deasilsoft.com>",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "site-index": "./dist/cli.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -b",
+    "clean": "rm -rf dist",
+    "knip": "knip",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "test": "vitest run --project site-index-cli",
+    "typecheck": "tsc -b --noEmit"
+  },
+  "dependencies": {
+    "cac": "^7.0.0",
+    "node-plop": "^0.32.3",
+    "site-index": "^0.0.0",
+    "vite": "^8.0.8"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

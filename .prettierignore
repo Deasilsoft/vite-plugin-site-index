@@ -1,0 +1,7 @@
+# Artifacts
+coverage
+dist
+node_modules
+
+# Handlebars templates
+**/*.hbs
