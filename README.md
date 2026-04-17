@@ -106,7 +106,7 @@ Behavior:
 For CI, cron jobs, or manual builds.
 
 ```bash
-site-index build --site-url https://example.com --root .
+npx site-index build --site-url https://example.com --root .
 ```
 
 Required:
@@ -123,7 +123,7 @@ Optional:
 Scaffold helper:
 
 ```bash
-site-index scaffold pages --dir src
+npx site-index make pages --dir src
 ```
 
 ## Flow 3: Core library (`site-index`)

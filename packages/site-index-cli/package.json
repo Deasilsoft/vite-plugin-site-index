@@ -37,6 +37,7 @@
   ],
   "scripts": {
     "build": "tsc -b",
+    "postbuild": "mkdir -p dist/templates && cp src/templates/site-index.hbs dist/templates/site-index.hbs",
     "clean": "rm -rf dist",
     "knip": "knip",
     "lint": "eslint .",

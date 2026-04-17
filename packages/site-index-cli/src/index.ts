@@ -1,2 +1,13 @@
 export { main } from "./main.js";
-export { scaffoldSiteIndexFile } from "./scaffold/scaffold.js";
+export { runMakeCommand } from "./make/make.js";
+export type {
+  BuildCommandCliOptions,
+  BuildCommandOptions,
+  CheckCommandCliOptions,
+  CheckCommandOptions,
+  MakeCommandCliOptions,
+  MakeOptions,
+  MakeResult,
+  PackageJsonWithVersion,
+  PlopFailure,
+} from "./types.js";

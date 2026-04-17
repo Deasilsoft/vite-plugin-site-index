@@ -1,34 +1,9 @@
 import nodePlop from "node-plop";
-import fs from "node:fs/promises";
 import path from "node:path";
-
+import { logger } from "../logger/logger.js";
+import type { MakeOptions, MakeResult, PlopFailure } from "../types.js";
+import { fileExists } from "../utils/fs.js";
 import register from "./plopfile.js";
-
-type ScaffoldOptions = {
-  name: string;
-  dir?: string;
-  force?: boolean;
-};
-
-type PlopFailure = {
-  error?: unknown;
-};
-
-async function fileExists(filePath: string): Promise<boolean> {
-  try {
-    await fs.stat(filePath);
-
-    return true;
-  } catch (error) {
-    const err = error as NodeJS.ErrnoException;
-
-    if (err.code === "ENOENT") {
-      return false;
-    }
-
-    throw error;
-  }
-}
 
 function throwIfFailure(failure: unknown): void {
   if (!failure) {
@@ -41,12 +16,12 @@ function throwIfFailure(failure: unknown): void {
     throw new Error(error);
   }
 
-  throw new Error("Scaffold failed");
+  throw new Error("Make failed");
 }
 
-export async function scaffoldSiteIndexFile(
-  options: ScaffoldOptions,
-): Promise<{ filePath: string }> {
+export async function runMakeCommand(
+  options: MakeOptions,
+): Promise<MakeResult> {
   const dir = options.dir ?? "src";
   const fileName = `${options.name}.site-index.ts`;
   const filePath = path.resolve(process.cwd(), dir, fileName);
@@ -72,6 +47,7 @@ export async function scaffoldSiteIndexFile(
   });
 
   throwIfFailure(result.failures[0]);
+  logger.info(filePath);
 
   return { filePath };
 }
