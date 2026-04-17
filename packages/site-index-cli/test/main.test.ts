@@ -1,18 +1,18 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-const { loggerErrorMock, runBuildCommandMock, runCheckCommandMock } =
+const { loggerErrorMock, runBuildMock, runCheckMock } =
   vi.hoisted(() => ({
     loggerErrorMock: vi.fn(),
-    runBuildCommandMock: vi.fn(async () => undefined),
-    runCheckCommandMock: vi.fn(async () => undefined),
+    runBuildMock: vi.fn(async () => undefined),
+    runCheckMock: vi.fn(async () => undefined),
   }));
 
-vi.mock("../src/build/build.js", () => ({
-  runBuildCommand: runBuildCommandMock,
+vi.mock("../src/build/run.js", () => ({
+  runBuild: runBuildMock,
 }));
 
-vi.mock("../src/check/check.js", () => ({
-  runCheckCommand: runCheckCommandMock,
+vi.mock("../src/check/run.js", () => ({
+  runCheck: runCheckMock,
 }));
 
 vi.mock("../src/logger/logger.js", () => ({
@@ -29,19 +29,19 @@ describe("site-index CLI", () => {
   beforeEach(() => {
     process.exitCode = undefined;
     loggerErrorMock.mockReset();
-    runBuildCommandMock.mockReset();
-    runCheckCommandMock.mockReset();
-    runBuildCommandMock.mockResolvedValue(undefined);
-    runCheckCommandMock.mockResolvedValue(undefined);
+    runBuildMock.mockReset();
+    runCheckMock.mockReset();
+    runBuildMock.mockResolvedValue(undefined);
+    runCheckMock.mockResolvedValue(undefined);
   });
 
   it("shows help when invoked without a command", async () => {
     await expect(main(["node", "site-index"])).resolves.toBeUndefined();
-    expect(runBuildCommandMock).not.toHaveBeenCalled();
-    expect(runCheckCommandMock).not.toHaveBeenCalled();
+    expect(runBuildMock).not.toHaveBeenCalled();
+    expect(runCheckMock).not.toHaveBeenCalled();
   });
 
-  it("delegates build command execution to build/build.ts", async () => {
+  it("delegates build command execution to build/run.ts", async () => {
     await expect(
       main([
         "node",
@@ -60,7 +60,7 @@ describe("site-index CLI", () => {
       ]),
     ).resolves.toBeUndefined();
 
-    expect(runBuildCommandMock).toHaveBeenCalledWith({
+    expect(runBuildMock).toHaveBeenCalledWith({
       root: "/repo",
       siteUrl: "https://example.com",
       outDir: "public",
@@ -69,7 +69,7 @@ describe("site-index CLI", () => {
     });
   });
 
-  it("delegates check command execution to check/check.ts", async () => {
+  it("delegates check command execution to check/run.ts", async () => {
     await expect(
       main([
         "node",
@@ -86,7 +86,7 @@ describe("site-index CLI", () => {
       ]),
     ).resolves.toBeUndefined();
 
-    expect(runCheckCommandMock).toHaveBeenCalledWith({
+    expect(runCheckMock).toHaveBeenCalledWith({
       root: "/repo",
       siteUrl: "https://example.com",
       config: "vite.custom.ts",
